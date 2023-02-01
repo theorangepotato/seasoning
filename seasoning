@@ -1,38 +1,38 @@
 #!/bin/bash
 
-SEASON=1
-EPISODE=1
-SERIES_NAME=$(dirname $PWD)
-SERIES_NAME=${SERIES_NAME##*/}
+season=1
+episode=1
+series_name=$(dirname $PWD)
+series_name=${series_name##*/}
 
 while [[ $# -gt 0 ]]; do
     case $1 in
+	-n|--name)
+	    series_name="$2"
+	    shift # argument
+	    shift # value
+	    ;;
 	-x|--extension)
-	    EXTENSION="$2"
+	    extension="$2"
 	    shift # argument
 	    shift # value
 	    ;;
 	-s|--season)
-	    SEASON="$2"
+	    season="$2"
 	    shift # argument
 	    shift # value
 	    ;;
 	-e|--episode)
-	    EPISODE="$2"
-	    shift # argument
-	    shift # value
-	    ;;
-	-n|--name)
-	    SERIES_NAME="$2"
+	    episode="$2"
 	    shift # argument
 	    shift # value
 	    ;;
 	-d|--dryrun)
-	    DRYRUN="TRUE"
+	    dryrun="TRUE"
 	    shift # argument
 	    ;;
 	-q|--quiet)
-	    QUIET="TRUE"
+	    quiet="TRUE"
 	    shift # argument
 	    ;;
 	*)
@@ -42,28 +42,28 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-INTEGER='^[0-9]+$'
-if ! [[ $SEASON =~ $INTEGER ]] ; then
+if ! [ -z "$extension" ]; then
+    extension=".$extension"
+fi
+
+integer='^[0-9]+$'
+if ! [[ $season =~ $integer ]] ; then
    echo "ERROR: Season must be an integer number"
    exit 1
 fi
 
-if ! [[ $EPISODE =~ $INTEGER ]] ; then
+if ! [[ $episode =~ $integer ]] ; then
    echo "ERROR: Episode must be an integer number"
    exit 1
 fi
 
-if ! [ -z "$EXTENSION" ]; then
-    EXTENSION=".$EXTENSION"
-fi
-
-for file in *"$EXTENSION"; do
-    name="$SERIES_NAME S$(printf %02d "$SEASON")E$(printf %02d "$EPISODE")$EXTENSION"
-    if [ "$QUIET" != "TRUE" ]; then
+for file in *"$extension"; do
+    name="$series_name S$(printf %02d "$season")E$(printf %02d "$episode")$extension"
+    if [ "$quiet" != "TRUE" ]; then
         echo "$file --> $name"
     fi
-    if [ "$DRYRUN" != "TRUE" ]; then
+    if [ "$dryrun" != "TRUE" ]; then
         mv "$file" "$name"
     fi
-    EPISODE=$((EPISODE + 1))
+    episode=$((episode + 1))
 done
