@@ -2,12 +2,13 @@
 
 SEASON=1
 EPISODE=1
-# SERIES_NAME="Series Name"
+SERIES_NAME=$(dirname $PWD)
+SERIES_NAME=${SERIES_NAME##*/}
 
 while [[ $# -gt 0 ]]; do
     case $1 in
-        -x|--extension)
-            EXTENSION="$2"
+	-x|--extension)
+	    EXTENSION="$2"
 	    shift # argument
 	    shift # value
 	    ;;
@@ -16,7 +17,7 @@ while [[ $# -gt 0 ]]; do
 	    shift # argument
 	    shift # value
 	    ;;
-	-e|--episode-start)
+	-e|--episode)
 	    EPISODE="$2"
 	    shift # argument
 	    shift # value
@@ -41,11 +42,6 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-if [ -z ${SERIES_NAME+x} ]; then
-    echo "ERROR: Name must be set"
-    exit 1
-fi
-
 INTEGER='^[0-9]+$'
 if ! [[ $SEASON =~ $INTEGER ]] ; then
    echo "ERROR: Season must be an integer number"
@@ -64,10 +60,10 @@ fi
 for file in *"$EXTENSION"; do
     name="$SERIES_NAME S$(printf %02d "$SEASON")E$(printf %02d "$EPISODE")$EXTENSION"
     if [ "$QUIET" != "TRUE" ]; then
-	echo "$file --> $name"
+        echo "$file --> $name"
     fi
     if [ "$DRYRUN" != "TRUE" ]; then
-      mv "$file" "$name"
+        mv "$file" "$name"
     fi
     EPISODE=$((EPISODE + 1))
 done
