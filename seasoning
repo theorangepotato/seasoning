@@ -2,7 +2,7 @@
 
 season=1
 episode=1
-series_name=$(dirname $PWD)
+series_name=$(dirname "$PWD")
 series_name=${series_name##*/}
 
 while [[ $# -gt 0 ]]; do
@@ -42,7 +42,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-if ! [ -z "$extension" ]; then
+if [ -n "$extension" ]; then
     extension=".$extension"
 fi
 
